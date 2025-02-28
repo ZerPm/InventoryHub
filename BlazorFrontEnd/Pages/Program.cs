@@ -1,9 +1,22 @@
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using BlazorFrontEnd;
+@page "/inventory"
+@inject HttpClient Http
 
-var builder = WebAssemblyHostBuilder.CreateDefault(args);
-builder.RootComponents.Add<App>("#app");
-builder.RootComponents.Add<HeadOutlet>("head::after");
+<h3>Inventory List</h3>
+<ul>
+    @foreach (var item in inventory)
+    {
+        <li>@item</li>
+    }
+</ul>
 
-await builder.Build().RunAsync();
+@code {
+    private List<string> inventory = new();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        inventory = await Http.GetFromJsonAsync<List<string>>("/api/inventory");
+    }
+}
+
+// Archivo: BlazorFrontEnd/Pages/_Imports.razor
+@using System.Net.Http.Json
